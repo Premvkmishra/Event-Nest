@@ -12,8 +12,8 @@ socketio = SocketIO(app)
 def get_db_connection():
     conn = mysql.connector.connect(
         host="localhost",
-        user="Root",
-        password="yes",
+        user="root",
+        password="yess",
         database="event"
     )
     return conn
