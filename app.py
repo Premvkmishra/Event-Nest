@@ -11,10 +11,11 @@ socketio = SocketIO(app)
 
 def get_db_connection():
     conn = mysql.connector.connect(
-        host="localhost",
+        host="hopper.proxy.rlwy.net",
         user="root",
-        password="yes",
-        database="event"
+        password="zxyxhaUVPDNCsUSCEhEtVrPPTdlRnMIe",
+        database="Event",
+        port=45920
     )
     return conn
 
