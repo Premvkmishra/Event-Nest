@@ -3,6 +3,8 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask_bcrypt import Bcrypt
 import mysql.connector
 from urllib.parse import quote as url_quote
+import os
+
 
 
 app = Flask(__name__)
