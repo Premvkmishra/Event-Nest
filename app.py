@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask_bcrypt import Bcrypt
 import mysql.connector
+from urllib.parse import quote as url_quote
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'  # Make sure to use a secure key in production
