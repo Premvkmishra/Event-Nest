@@ -1,7 +1,9 @@
 Flask==2.2.2
 Werkzeug==2.3.7
 flask-bcrypt
-
+dnspython==2.2.1
+gevent-websocket
+gevent
 Flask-SQLAlchemy==2.5.1
 Flask-SocketIO==5.1.1
 Flask-Login==0.5.0
