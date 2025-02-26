@@ -8,7 +8,7 @@ import os
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'  # Make sure to use a secure key in production
+app.config['SECRET_KEY'] = 'secret!'  
 
 bcrypt = Bcrypt(app)
 socketio = SocketIO(app)
@@ -56,7 +56,7 @@ def post_event():
         domain = request.form.get('domain')
         max_participants = request.form.get('max_participants')
 
-        # Insert event details into the event table
+        
         query = """
             INSERT INTO event (name, address, date, time, phone, domain, max_participants)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
