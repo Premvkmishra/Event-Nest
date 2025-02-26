@@ -8,7 +8,7 @@ import os
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'  # Make sure to use a secure key in production
+app.config['SECRET_KEY'] = 'secret!'  
 
 bcrypt = Bcrypt(app)
 socketio = SocketIO(app)
@@ -56,7 +56,7 @@ def post_event():
         domain = request.form.get('domain')
         max_participants = request.form.get('max_participants')
 
-        # Insert event details into the event table
+        
         query = """
             INSERT INTO event (name, address, date, time, phone, domain, max_participants)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -152,6 +152,15 @@ def event_chat(event_id):
 # def get_participants(event_id):
 #     registrations = fetch_query("SELECT * FROM registration WHERE event_id = %s", (event_id,))
 #     return {'participants': [{'name': fetch_query("SELECT name FROM user WHERE id = %s", (r['user_id'],))[0]['name']} for r in registrations]}
+
+
+from flask import Flask, render_template, request
+from recommendations import get_recommendations  # Import the function
+
+@app.route("/recommendations/<int:event_id>")
+def show_recommendations(event_id):
+    recommended_events = get_recommendations(event_id)
+    return render_template("recommendations.html", events=recommended_events)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
