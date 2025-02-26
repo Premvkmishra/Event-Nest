@@ -51,7 +51,6 @@ def get_recommendations(event_id):
     event_index = event_ids.index(event_id)
     similar_indices = similarity_matrix[event_index].argsort()[::-1][1:6]  
 
-    # Get recommended event IDs
     recommended_events = [event_ids[i] for i in similar_indices]
 
     return [event for event in events if event["id"] in recommended_events]
