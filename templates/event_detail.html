@@ -24,9 +24,10 @@
             <p><strong>Address:</strong> {{ event.address }}</p>
             <p><strong>Time:</strong> {{ event.time }}</p>
             <p><strong>Domain:</strong> {{ event.domain }}</p>
+            
             <a href="https://www.google.com/maps/search/?api=1&query={{ event.address | urlencode }}" target="_blank" class="btn">Locate</a>
             <a href="{{ url_for('report_event', event_id=event.id) }}" class="btn">Report</a>
-            
+            <a href="{{ url_for('show_recommendations', event_id=event.id) }}" class="btn">See Similar Events</a> <!-- New Button -->
         </div>
 
         <div class="registrations-box">

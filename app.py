@@ -153,6 +153,15 @@ def event_chat(event_id):
 #     registrations = fetch_query("SELECT * FROM registration WHERE event_id = %s", (event_id,))
 #     return {'participants': [{'name': fetch_query("SELECT name FROM user WHERE id = %s", (r['user_id'],))[0]['name']} for r in registrations]}
 
+
+from flask import Flask, render_template, request
+from recommendations import get_recommendations  # Import the function
+
+@app.route("/recommendations/<int:event_id>")
+def show_recommendations(event_id):
+    recommended_events = get_recommendations(event_id)
+    return render_template("recommendations.html", events=recommended_events)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
