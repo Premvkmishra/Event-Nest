@@ -14,3 +14,4 @@ mysql-connector-python==8.0.27
 WTForms==2.3.3
 python-dotenv==0.19.1  # For environment variable management
 pandas
+scikit-learn
