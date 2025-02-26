@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - {{ user.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace; /* Monospace for a code-like feel */
+            background-color: #000; /* Pure black */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px; /* More focused width */
+            margin: 30px auto; /* More top margin */
+            padding: 40px;
+            background-color: rgba(15, 15, 15, 0.95); /* Near-black, slightly transparent */
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 180, 200, 0.5); /* Cyan blue glow */
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(0, 180, 200, 0.15); /* Subtle border */
+            overflow: hidden; /* Clip animated lines */
+        }
+
+        /* Grid background */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 180, 200, 0.07) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 180, 200, 0.07) 1px, transparent 1px);
+            background-size: 10px 10px; /* Adjust grid size */
+            z-index: -1;
+            opacity: 0.6;
+            animation: shiftGrid 15s linear infinite;
+            border-radius: 12px;
+        }
+
+        @keyframes shiftGrid {
+            0% { background-position: 0 0; }
+            100% { background-position: 15px 15px; } /* Subtle shift */
+        }
+
+        h2 {
+            color: #00e5ff; /* Cyan blue header */
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #00e5ff; /* Stronger glow */
+        }
+
+        p {
+            color: #ccc;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 0.9em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* More spacing */
+        }
+
+        label {
+            color: #eee;
+            font-weight: 500;
+            text-align: left;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Input and select styling */
+        input[type="text"],
+        input[type="email"],
+        select {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            background-color: #252525; /* Darker input fields */
+            color: #fff;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Roboto Mono', monospace; /* Monospace for inputs too */
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 18px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+            border-color: #00e5ff; /* Cyan blue focus */
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
+        }
+
+        button[type="submit"] {
+            background-color: #00a3cc; /* A shade of cyan blue */
+            color: #fff;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 0 15px rgba(0, 163, 204, 0.6); /* Glow */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #00778f; /* Darker cyan on hover */
+            transform: translateY(-3px); /* Subtle lift */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Account Configuration</h2>
+        <p>Personalize your account settings below.</p>
+
+        <form method="POST" action="{{ url_for('settings') }}">
+
+            <label for="username">Display Name:</label>
+            <input type="text" id="username" name="username" value="{{ user.name }}" required placeholder="Enter your preferred username">
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required placeholder="Enter a valid email address">
+
+            <label for="language">Interface Language:</label>
+            <select id="language" name="language">
+                <option value="en">English</option>
+                <option value="es">Español (Coming Soon)</option>
+                <option value="fr">Français (Coming Soon)</option>
+            </select>
+
+            <button type="submit">Apply Configuration</button>
+        </form>
+    </div>
+</body>
+</html>

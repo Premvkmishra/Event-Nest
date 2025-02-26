@@ -4,43 +4,295 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sponsorship Opportunities</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='sponser.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        /* General Styles (Dark Theme) */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212; /* Dark background */
+            color: #eee; /* Light text */
+            line-height: 1.6;
+        }
+
+        .section {
+            padding: 50px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles (Dark Theme) */
+        header {
+            background-color: #212121; /* Darker header background */
+            color: #fff;
+            text-align: center;
+            padding: 80px 20px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #ddd;
+        }
+
+        /* Benefits Section (Dark Theme) */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit {
+            background-color: #333; /* Dark card background */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+            text-align: center;
+            transition: transform 0.3s ease;
+            color: #fff; /* Light text in cards */
+        }
+
+        .benefit:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit i {
+            font-size: 2.5em;
+            color: #00aaff; /* Lighter blue */
+            margin-bottom: 15px;
+        }
+
+        .benefit h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .benefit p {
+            color: #ddd; /* Light paragraph text */
+        }
+
+        /* Rules Section (Dark Theme) */
+        #rules ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #rules li {
+            padding: 15px;
+            border-bottom: 1px solid #444; /* Darker border */
+            position: relative;
+            padding-left: 30px;
+        }
+
+        #rules li i {
+            position: absolute;
+            left: 0;
+            top: 15px;
+            color: #2ecc71; /* Green checkmark */
+        }
+
+        /* Apply Section (Dark Theme) */
+        .apply-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .agreement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .agreement input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .agreement label {
+            font-size: 1.1em;
+        }
+
+        /* Form Styles (Dark Theme) */
+        #sponsorship-form {
+            background-color: #333; /* Dark form background */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 30px;
+        }
+
+        #sponsorship-form h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fff; /* White title */
+        }
+
+        #sponsorship-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ccc; /* Lighter label */
+        }
+
+        #sponsorship-form input[type="text"],
+        #sponsorship-form input[type="email"],
+        #sponsorship-form input[type="tel"],
+        #sponsorship-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #555; /* Darker border */
+            border-radius: 4px;
+            font-size: 1em;
+            background-color: #444; /* Darker input background */
+            color: #eee; /* Light input text */
+            transition: border-color 0.3s ease;
+        }
+
+        #sponsorship-form input[type="text"]:focus,
+        #sponsorship-form input[type="email"]:focus,
+        #sponsorship-form input[type="tel"]:focus,
+        #sponsorship-form textarea:focus {
+            border-color: #00aaff; /* Lighter blue on focus */
+            outline: none;
+        }
+
+        /* Button Styles (Dark Theme) */
+        .cta-button, .submit-button {
+            background-color: #00aaff; /* Lighter blue button */
+            color: #fff;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover, .submit-button:hover {
+            background-color: #0077cc; /* Slightly darker blue on hover */
+        }
+
+        /* Footer Styles (Dark Theme) */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: #212121; /* Darker footer background */
+            color: #fff;
+            margin-top: 50px;
+        }
+
+        /* Responsive Design (Dark Theme) */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Sponsorship Opportunities</h1>
-    </header>
 
-    <div class="sponsor-container">
-        <h2>Why Sponsor Our Event?</h2>
-        <ul>
-            <li>Promote your brand to a diverse audience.</li>
-            <li>Gain visibility through our marketing channels.</li>
-            <li>Network with potential clients and partners.</li>
-            <li>Receive recognition on event materials.</li>
-            <li>Get exclusive access to event data and insights.</li>
-            <li>Participate in post-event promotional opportunities.</li>
-            <li>Showcase your products or services during the event.</li>
-        </ul>
+<header>
+    <div class="header-content">
+        <h1>Become a Sponsor</h1>
+        <p>Support our event and reach a wider audience.</p>
+    </div>
+</header>
 
-        <h2>Rules for Sponsorship</h2>
-        <ul>
-            <li>All sponsorship applications must be submitted at least 14 days before the event.</li>
-            <li>Each sponsor is required to provide promotional materials two weeks prior to the event.</li>
-            <li>All sponsorships are subject to approval by the event organizers.</li>
-            <li>Sponsors are expected to adhere to event policies and guidelines.</li>
-            <li>Payment must be completed before the event date to secure sponsorship benefits.</li>
-        </ul>
+<section id="benefits" class="section">
+    <h2>Why Sponsor Us?</h2>
+    <div class="benefits-grid">
+        <div class="benefit">
+            <i class="fas fa-bullhorn"></i>
+            <h3>Brand Visibility</h3>
+            <p>Increase your brand's exposure to a diverse and engaged audience.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-chart-line"></i>
+            <h3>Targeted Marketing</h3>
+            <p>Reach potential customers who are interested in your products or services.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-handshake"></i>
+            <h3>Networking</h3>
+            <p>Connect with industry leaders, potential partners, and future clients.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-award"></i>
+            <h3>Recognition</h3>
+            <p>Be recognized as a supporter of innovation and community engagement.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-database"></i>
+            <h3>Data Insights</h3>
+            <p>Gain access to valuable event data and insights to inform your marketing strategies.</p>
+        </div>
+        <div class="benefit">
+            <i class="fas fa-comments"></i>
+            <h3>Post-Event Promotion</h3>
+            <p>Continue promoting your brand through post-event marketing opportunities.</p>
+        </div>
+    </div>
+</section>
 
-        <div class="apply-section">
+<section id="rules" class="section">
+    <h2>Sponsorship Guidelines</h2>
+    <ul>
+        <li><i class="fas fa-check-circle"></i> Applications must be submitted at least 14 days prior to the event.
+        </li>
+        <li><i class="fas fa-check-circle"></i> Promotional materials must be provided two weeks before the event.
+        </li>
+        <li><i class="fas fa-check-circle"></i> Sponsorships are subject to approval by event organizers.</li>
+        <li><i class="fas fa-check-circle"></i> Adherence to event policies and guidelines is expected.</li>
+        <li><i class="fas fa-check-circle"></i> Payment must be completed before the event to secure benefits.</li>
+    </ul>
+</section>
+
+<section id="apply" class="section">
+    <h2>Apply for Sponsorship</h2>
+    <div class="apply-container">
+        <div class="agreement">
             <input type="checkbox" id="agreement" required>
             <label for="agreement">I agree to the sponsorship rules and benefits.</label>
-            <button id="apply-sponsor-btn">Apply for Sponsorship</button>
         </div>
+        <button id="apply-sponsor-btn" class="cta-button">Become a Sponsor</button>
     </div>
 
     <div id="sponsorship-form" style="display: none;">
-        <h2>Sponsorship Application Form</h2>
+        <h3>Sponsorship Application Form</h3>
         <form>
             <label for="name">Your Name:</label>
             <input type="text" id="name" name="name" required>
@@ -54,19 +306,25 @@
             <label for="message">Message (optional):</label>
             <textarea id="message" name="message" rows="4"></textarea>
 
-            <button type="submit">Submit Application</button>
+            <button type="submit" class="submit-button">Submit Application</button>
         </form>
     </div>
+</section>
 
-    <script>
-        document.getElementById('apply-sponsor-btn').onclick = function() {
-            const form = document.getElementById('sponsorship-form');
-            if (form.style.display === 'none') {
-                form.style.display = 'block';
-            } else {
-                form.style.display = 'none';
-            }
-        };
-    </script>
+<footer>
+    <p>© 2024 Event Sponsorship. All rights reserved.</p>
+</footer>
+
+<script>
+    document.getElementById('apply-sponsor-btn').onclick = function () {
+        const form = document.getElementById('sponsorship-form');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    };
+</script>
+
 </body>
 </html>

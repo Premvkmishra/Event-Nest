@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Template</title>
+    <style>
+        .highlight { background-color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Original Text: {{ text }}</h1>
+    <h1>Highlighted Text: {{ text | highlight_search_term(search_query) | safe }}</h1>
+</body>
+</html>

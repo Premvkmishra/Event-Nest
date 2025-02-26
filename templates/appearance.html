@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appearance - {{ user.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif; /* A more geometric font */
+            background-color: #000; /* Pure black background */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 30px auto; /* More top margin */
+            padding: 40px; /* More padding inside */
+            background-color: rgba(20, 20, 20, 0.9); /* Darker, more opaque background */
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 150, 255, 0.4); /* Stronger glow effect */
+            position: relative;
+            z-index: 1;
+            overflow: hidden; /* Clip animated lines */
+            border: 1px solid rgba(0, 150, 255, 0.1); /* Add a subtle border */
+        }
+
+        /* Animated lines for a futuristic feel */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 150, 255, 0.08) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 150, 255, 0.08) 1px, transparent 1px);
+            background-size: 10px 10px; /* Adjust grid size */
+            z-index: -1;
+            opacity: 0.7;
+            animation: scanLines 10s linear infinite; /* Subtle scan line animation */
+            border-radius: 12px;
+        }
+
+        @keyframes scanLines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; } /* Animate background position */
+        }
+
+        h2 {
+            color: #00d4ff; /* Electric blue */
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #00d4ff; /* Stronger text glow */
+        }
+
+        p {
+            color: #ccc;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 0.95em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* More spacing */
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Needed for animated lines */
+            overflow: hidden; /* Clip animated lines */
+            padding: 10px; /* Add some padding around each group */
+        }
+        /* More prominent labels */
+        label {
+            color: #eee;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Enhance select and color input */
+        select,
+        input[type="color"] {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #444; /* Slightly lighter border */
+            background-color: #2a2a2a; /* Darker background */
+            color: #fff;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 18px;
+        }
+
+        input[type="color"] {
+            height: 50px;
+            padding: 8px; /* Adjust padding */
+            cursor: pointer;
+            border: none; /* Remove border on color input */
+        }
+
+        select:focus,
+        input[type="color"]:focus {
+            border-color: #00d4ff; /* Electric blue focus color */
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.7); /* Stronger focus glow */
+        }
+
+        button[type="submit"] {
+            background-color: #00bcd4; /* Teal */
+            color: #fff;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 0 12px rgba(0, 188, 212, 0.5); /* Teal glow on the button */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0096a7; /* Darker teal on hover */
+            transform: translateY(-3px); /* Slight lift on hover */
+        }
+
+        /* Animated lines (same as before but placed correctly) */
+        .setting-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, rgba(0, 212, 255, 0), #00d4ff, rgba(0, 212, 255, 0));
+            animation: drawLine 5s linear infinite; /* Slowed down the animation */
+            border-radius: 5px;
+        }
+
+        .setting-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to left, rgba(0, 212, 255, 0), #00d4ff, rgba(0, 212, 255, 0));
+            animation: drawLineReverse 5s linear infinite;
+            border-radius: 5px;
+        }
+
+        @keyframes drawLine {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        @keyframes drawLineReverse {
+            0% { width: 100%; }
+            100% { width: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Appearance Settings</h2>
+        <p>Customize the look and feel of your experience.</p>
+
+        <form method="POST" action="{{ url_for('appearance') }}">
+
+            <div class="setting-group">
+                <label for="theme">Theme:</label>
+                <select id="theme" name="theme">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light (Coming Soon)</option>
+                    <option value="system">System Default (Coming Soon)</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <label for="accent_color">Accent Color:</label>
+                <input type="color" id="accent_color" name="accent_color" value="#3498db">
+            </div>
+
+            <button type="submit">Save Appearance</button>
+        </form>
+    </div>
+</body>
+</html>

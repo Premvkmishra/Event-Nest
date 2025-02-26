@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - {{ user.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Roboto Mono', monospace; /* Monospace font for code-like feel */
+            background-color: #000; /* Dark Background */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px; /* Adjusted max width */
+            margin: 30px auto;
+            padding: 40px;
+            background-color: rgba(10, 10, 10, 0.9); /* Even darker container */
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 200, 100, 0.4); /* Greenish neon glow */
+            text-align: center;
+            position: relative; /* For animated effects */
+            overflow: hidden; /* Clip overflowing elements */
+            border: 1px solid rgba(0, 200, 100, 0.15); /* Subtle border */
+        }
+
+        /* Container Background Animation */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 200, 100, 0.06) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 200, 100, 0.06) 1px, transparent 1px);
+            background-size: 8px 8px; /* Finer grid */
+            z-index: -1;
+            opacity: 0.6;
+            animation: shiftGrid 20s linear infinite; /* Slow shift */
+        }
+
+        @keyframes shiftGrid {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 20px; } /* Adjust for animation speed */
+        }
+
+        h2 {
+            color: #00ff80; /* Neon green headers */
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 12px #00ff80; /* Green glow */
+        }
+
+        p {
+            color: #ccc;
+            margin-bottom: 35px;
+            font-size: 0.9em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 25px; /* More vertical spacing */
+        }
+
+        label {
+            color: #eee;
+            font-weight: 500;
+            text-align: left;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #444; /* Lighter border */
+            background-color: #222; /* Even darker */
+            color: #fff;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-family: 'Roboto Mono', monospace; /* Match overall font */
+        }
+
+        textarea:focus {
+            border-color: #00ff80; /* Green focus */
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 128, 0.7);
+        }
+
+        button[type="submit"] {
+            background-color: #00b359; /* A different shade of green */
+            color: #fff;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 0 15px rgba(0, 179, 89, 0.6); /* Button glow */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #008046; /* Even darker green */
+            transform: translateY(-3px); /* Subtle lift on hover */
+        }
+
+        .redirect-message {
+            color: #888;
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Feedback Portal</h2>
+        <p>Share your thoughts and help us improve!</p>
+
+        <form method="POST" action="{{ url_for('feedback') }}">
+            <label for="feedback">Enter your message:</label>
+            <textarea id="feedback" name="feedback" rows="8" required placeholder="Type your feedback here..."></textarea>
+            <button type="submit">Transmit Data</button>
+        </form>
+
+        <p class="redirect-message">Data transmission complete. Redirecting...</p>
+        <meta http-equiv="refresh" content="3;url={{ url_for('profile') }}">
+    </div>
+</body>
+</html>

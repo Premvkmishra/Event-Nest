@@ -19,15 +19,16 @@
             </div>
             <h1 class="event-nest-heading">EVENT-NEST</h1>
         </div>
-
-        <div class="header-right">
-            <div class="search-bar">
-                <input type="text" placeholder="Search events..." class="search-input">
-                <button class="search-btn">
+       
+        <div class="search-bar">
+            <form action="{{ url_for('index') }}" method="GET">
+                <input type="text" placeholder="Search events..." class="search-input" name="search" value="{{ search_query if search_query else '' }}">
+                <button type="submit" class="search-btn">
                     <img src="{{ url_for('static', filename='Search-icon.png') }}" alt="Search Icon">
                 </button>
-            </div>
-
+            </form>
+        </div>
+       
             <div class="top-right-buttons">
                 <a href="{{ url_for('post_event') }}" class="btn">Post a New Event</a>
                 <a href="{{ url_for('leaderboard') }}" class="btn">Leaderboard</a> 

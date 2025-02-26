@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{ user.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000; /* Dark background for hightech look */
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(25, 25, 25, 0.85); /* Semi-transparent dark container */
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.3); /* Neon-like glow */
+            position: relative; /* Required for the pseudo-element overlay */
+            z-index: 1; /* Ensure content is above the background */
+            backdrop-filter: blur(5px); /* For a frosted glass effect */
+        }
+
+        /* Pseudo-element overlay for grid-like pattern */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(0, 150, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 150, 255, 0.05) 1px, transparent 1px);
+            background-size: 10px 10px; /* Adjust for finer or coarser grid */
+            z-index: -1; /* Place behind the container content */
+            border-radius: 10px; /* Match container border-radius */
+        }
+
+        h2 {
+            color: #0096ff; /* Neon blue headers */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0096ff; /* Glowing effect */
+        }
+
+        p {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        /* Widget Styling */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .widget {
+            background-color: rgba(30, 30, 30, 0.7); /* Dark widget background */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 150, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 150, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.4);
+        }
+
+        .widget h3 {
+            color: #00d4ff; /* Lighter blue widget titles */
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+
+        .widget p {
+            font-size: 0.9em;
+        }
+
+        /* Animate lines for extra effect */
+        .animated-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+
+        .animated-lines span {
+            position: absolute;
+            background: linear-gradient(to right, rgba(0, 150, 255, 0), #0096ff);
+            height: 1px;
+            width: 0;
+            animation: drawLine 2s linear infinite;
+        }
+
+        .animated-lines span:nth-child(1) { top: 0; left: 0; }
+        .animated-lines span:nth-child(2) { top: 0; right: 0; animation-delay: 0.5s; }
+        .animated-lines span:nth-child(3) { bottom: 0; left: 0; animation-delay: 1s; }
+        .animated-lines span:nth-child(4) { bottom: 0; right: 0; animation-delay: 1.5s; }
+
+        @keyframes drawLine {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+        .glowing-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(0, 150, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 150, 255, 0.5); /* Intense glow */
+            animation: pulse 3s linear infinite; /* Subtle pulse */
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Dashboard for {{ user.name }}</h2>
+        <p>Email: {{ user.email }}</p>
+            <div class="glowing-circle"></div>
+
+        <div class="widget-grid">
+            <div class="widget">
+                <div class="animated-lines">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <h3>Upcoming Events</h3>
+                <p>You have 3 events scheduled for this month.</p>
+            </div>
+
+            <div class="widget">
+                 <div class="animated-lines">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <h3>Registration Statistics</h3>
+                <p>Total Registrations: 50</p>
+            </div>
+
+            <div class="widget">
+                 <div class="animated-lines">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <h3>Feedback</h3>
+                <p>Average Feedback Score: 4.5/5</p>
+            </div>
+
+            <div class="widget">
+                 <div class="animated-lines">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <h3>Recent Activities</h3>
+                <p>Last logged in: 2 days ago</p>
+            </div>
+            <!-- Add more widgets here -->
+        </div>
+    </div>
+
+</body>
+</html>
