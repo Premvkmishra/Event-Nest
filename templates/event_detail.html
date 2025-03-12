@@ -5,49 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ event.name }} Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='event_detail.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="top-left-buttons">
-            <a href="{{ url_for('index') }}" class="btn">Explore</a>
-        </div>
-        
-        <div class="top-right-buttons">
-            <a href="{{ url_for('event_chat', event_id=event.id) }}" class="btn">Chatroom</a>
-            <a href="{{ url_for('sponsor_page', event_id=event.id) }}" class="btn">Sponsor</a>
-        </div>
-    </header>
+    <div class="page-container">
+        <header>
+            <div class="header-content">
+                <div class="top-left-buttons">
+                    <a href="{{ url_for('index') }}" class="btn back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Explore</span>
+                    </a>
+                </div>
+                
+                <div class="event-title-area">
+                    <span class="event-domain-badge">{{ event.domain }}</span>
+                    <h1>{{ event.name }}</h1>
+                </div>
+                
+                <div class="top-right-buttons">
+                    <a href="{{ url_for('event_chat', event_id=event.id) }}" class="btn chat-btn">
+                        <i class="fas fa-comments"></i>
+                        <span>Chatroom</span>
+                    </a>
+                    <a href="{{ url_for('sponsor_page', event_id=event.id) }}" class="btn sponsor-btn">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>Sponsor</span>
+                    </a>
+                </div>
+            </div>
+        </header>
 
-    <div class="event-details-container">
-        <div class="event-details-box">
-            <h1>{{ event.name }}</h1>
-            <p><strong>Address:</strong> {{ event.address }}</p>
-            <p><strong>Time:</strong> {{ event.time }}</p>
-            <p><strong>Domain:</strong> {{ event.domain }}</p>
-            
-            <a href="https://www.google.com/maps/search/?api=1&query={{ event.address | urlencode }}" target="_blank" class="btn">Locate</a>
-            <a href="{{ url_for('report_event', event_id=event.id) }}" class="btn">Report</a>
-            <a href="{{ url_for('show_recommendations', event_id=event.id) }}" class="btn">See Similar Events</a> <!-- New Button -->
-        </div>
-
-        <div class="registrations-box">
-            <h2>Registrations</h2>
-            <table class="registrations-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>College Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for registration in registrations %}
-                    <tr>
-                        <td>{{ registration.name }}</td>
-                        <td>{{ registration.college_name if registration.college_name else 'N/A' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="content-container">
+            <div class="event-details-container">
+                <div class="event-banner">
+                    <div class="event-banner-overlay"></div>
+                </div>
+                
+                <div class="event-info-grid">
+                    <div class="event-details-box">
+                        <div class="event-info-header">
+                            <h2>Event Details</h2>
+                        </div>
+                        
+                        <div class="event-info-content">
+                            <div class="event-info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span class="info-label">Address</span>
+                                    <span class="info-value">{{ event.address }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-info-item">
+                                <div class="info-icon">
+                                    <i class="far fa-clock"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span class="info-label">Time</span>
+                                    <span class="info-value">{{ event.time }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span class="info-label">Domain</span>
+                                    <span class="info-value">{{ event.domain }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="info-text">
+                                    <span class="info-label">Date</span>
+                                    <span class="info-value">{{ event.date.strftime('%d %b, %Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="event-actions">
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ event.address | urlencode }}" target="_blank" class="action-btn locate-btn">
+                                <i class="fas fa-location-arrow"></i>
+                                <span>Locate</span>
+                            </a>
+                            <a href="{{ url_for('report_event', event_id=event.id) }}" class="action-btn report-btn">
+                                <i class="fas fa-flag"></i>
+                                <span>Report</span>
+                            </a>
+                            <a href="{{ url_for('show_recommendations', event_id=event.id) }}" class="action-btn similar-btn">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Similar Events</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="registrations-box">
+                        <div class="registrations-header">
+                            <h2>Registrations</h2>
+                            <div class="registrations-count">
+                                <span>{{ registrations|length }}</span> Attendees
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="registrations-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>College Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for registration in registrations %}
+                                    <tr>
+                                        <td>{{ registration.name }}</td>
+                                        <td>{{ registration.college_name if registration.college_name else 'N/A' }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

@@ -104,56 +104,127 @@ def event_detail(event_id):
     registrations = fetch_query("SELECT * FROM registration WHERE event_id = %s", (event_id,))
     return render_template('event_detail.html', event=event[0], registrations=registrations)
 
-@app.route('/event/<int:event_id>/chat', methods=['GET', 'POST'])
+# Add or verify these routes and handlers in your app.py file
+
+@app.route('/event/<int:event_id>/chat')
 def event_chat(event_id):
     event = fetch_query("SELECT * FROM event WHERE id = %s", (event_id,))
+    if not event:
+        return "Event not found", 404
+        
     if 'user_id' in session:
         user = fetch_query("SELECT * FROM user WHERE id = %s", (session['user_id'],))
-        username = user[0]['name']
+        username = user[0]['name'] if user else 'Guest'
     else:
         username = 'Guest'
     
     return render_template('chat.html', event=event[0], username=username)
 
-# @socketio.on('join')
-# def handle_join(data):
-#     username = data['username']
-#     event_id = data['event_id']
-#     room = f"event_{event_id}"
-#     join_room(room)
-#     emit('message', {'msg': f'{username} has joined the chat.'}, to=room)
+@socketio.on('join')
+def handle_join(data):
+    username = data['username']
+    event_id = data['event_id']
+    room = f"event_{event_id}"
+    join_room(room)
+    emit('message', {'username': 'System', 'msg': f'{username} has joined the chat.'}, to=room)
 
-# @socketio.on('message')
-# def handle_message(data):
-#     event_id = data['event_id']
-#     room = f"event_{event_id}"
-#     query = """
-#         INSERT INTO messages (message, user_id, event_id) 
-#         VALUES (%s, %s, %s)
-#     """
-#     params = (data['msg'], data['user_id'], event_id)
-#     execute_query(query, params)
-#     emit('message', {'username': data['username'], 'msg': data['msg']}, to=room)
+@socketio.on('message')
+def handle_message(data):
+    username = data['username']
+    msg = data['msg']
+    event_id = data['event_id']
+    room = f"event_{event_id}"
+    
+    # Get user_id if available
+    user_id = session.get('user_id', None)
+    
+    # Store message in database
+    query = """
+        INSERT INTO messages (content, user_id, event_id, username, timestamp) 
+        VALUES (%s, %s, %s, %s, NOW())
+    """
+    params = (msg, user_id, event_id, username)
+    execute_query(query, params)
+    
+    # Broadcast message to room
+    emit('message', {'username': username, 'msg': msg}, to=room)
 
-# @socketio.on('leave')
-# def handle_leave(data):
-#     username = data['username']
-#     event_id = data['event_id']
-#     room = f"event_{event_id}"
-#     leave_room(room)
-#     emit('message', {'msg': f'{username} has left the chat.'}, to=room)
+@socketio.on('leave')
+def handle_leave(data):
+    username = data['username']
+    event_id = data['event_id']
+    room = f"event_{event_id}"
+    leave_room(room)
+    emit('message', {'username': 'System', 'msg': f'{username} has left the chat.'}, to=room)
 
-# @app.route('/event/<int:event_id>/messages')
-# def get_messages(event_id):
-#     messages = fetch_query("SELECT * FROM messages WHERE event_id = %s", (event_id,))
-#     return {'messages': [{'username': fetch_query("SELECT name FROM user WHERE id = %s", (m['user_id'],))[0]['name'], 'message': m['message']} for m in messages]}
+@app.route('/event/<int:event_id>/messages')
+def get_messages(event_id):
+    # First check if messages table exists, if not create it
+    try:
+        check_query = "SELECT 1 FROM messages LIMIT 1"
+        fetch_query(check_query)
+    except Exception:
+        # Table doesn't exist, create it
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            content TEXT NOT NULL,
+            user_id INT,
+            event_id INT NOT NULL,
+            username VARCHAR(255),
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE SET NULL,
+            FOREIGN KEY (event_id) REFERENCES event(id) ON DELETE CASCADE
+        )
+        """
+        execute_query(create_table_query)
+    
+    # Fetch messages for this event
+    messages_query = """
+        SELECT content, user_id, username, timestamp 
+        FROM messages 
+        WHERE event_id = %s 
+        ORDER BY timestamp ASC
+    """
+    
+    try:
+        messages = fetch_query(messages_query, (event_id,))
+    except Exception:
+        # If query fails, return empty list
+        return {'messages': []}
+    
+    # Format messages
+    formatted_messages = []
+    for msg in messages:
+        username = msg.get('username')
+        if not username and msg.get('user_id'):
+            user = fetch_query("SELECT name FROM user WHERE id = %s", (msg['user_id'],))
+            username = user[0]['name'] if user else 'Unknown User'
+        
+        formatted_messages.append({
+            'username': username or 'Unknown User',
+            'content': msg['content']
+        })
+    
+    return {'messages': formatted_messages}
 
-# @app.route('/event/<int:event_id>/participants')
-# def get_participants(event_id):
-#     registrations = fetch_query("SELECT * FROM registration WHERE event_id = %s", (event_id,))
-#     return {'participants': [{'name': fetch_query("SELECT name FROM user WHERE id = %s", (r['user_id'],))[0]['name']} for r in registrations]}
-
-
+@app.route('/event/<int:event_id>/participants')
+def get_participants(event_id):
+    # Get participants for this event
+    participants_query = """
+        SELECT u.name 
+        FROM registration r
+        JOIN user u ON r.user_id = u.id
+        WHERE r.event_id = %s
+    """
+    
+    try:
+        participants = fetch_query(participants_query, (event_id,))
+    except Exception:
+        # If query fails, return empty list
+        return {'participants': []}
+    
+    return {'participants': participants}
 from flask import Flask, render_template, request
 from recommendations import get_recommendations  # Import the function
 
@@ -198,29 +269,51 @@ def sign_up():
 def profile():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-
+    
     user = fetch_query("SELECT * FROM user WHERE id = %s", (session['user_id'],))[0]
-    upcoming_events = fetch_query("""
-        SELECT * FROM event 
-        WHERE date >= CURDATE() 
-        AND id IN (SELECT event_id FROM registration WHERE user_id = %s)
+    
+    # Fetch upcoming events
+    user['upcoming_events'] = fetch_query("""
+        SELECT 
+            e.id AS event_id,
+            e.name AS event_name,
+            e.date AS event_date,
+            CASE
+                WHEN e.date >= CURDATE() THEN 'Present'
+                ELSE 'Past'
+            END AS event_status
+        FROM event e
+        JOIN registration r ON e.id = r.event_id
+        JOIN user u ON r.user_id = u.id
+        WHERE e.date >= CURDATE()
+        AND u.id = %s
     """, (user['id'],))
     
-    past_events = fetch_query("""
-        SELECT * FROM event 
-        WHERE date < CURDATE() 
-        AND id IN (SELECT event_id FROM registration WHERE user_id = %s)
+    # Fetch past events
+    user['past_events'] = fetch_query("""
+        SELECT 
+            e.id AS event_id,
+            e.name AS event_name,
+            e.date AS event_date,
+            CASE
+                WHEN e.date >= CURDATE() THEN 'Present'
+                ELSE 'Past'
+            END AS event_status
+        FROM event e
+        JOIN registration r ON e.id = r.event_id
+        JOIN user u ON r.user_id = u.id
+        WHERE e.date < CURDATE()
+        AND u.id = %s
     """, (user['id'],))
-
+    
     badge = None
     registration_count = len(fetch_query("SELECT * FROM registration WHERE user_id = %s", (user['id'],)))
     if registration_count > 10:
         badge = 'gold'
     elif registration_count > 5:
         badge = 'red'
-
-    return render_template('profile.html', user=user, upcoming_events=upcoming_events, past_events=past_events, badge=badge)
-
+    
+    return render_template('profile.html', user=user, badge=badge)
 @app.route('/leaderboard')
 def leaderboard():
     # Connect to the database

@@ -3,127 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Profile Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <aside class="sidebar">
             <div class="user-info">
-                <div class="user-icon-container">
+                <div class="user-avatar">
                     <img src="{{ url_for('static', filename='See.jpeg') }}" alt="User Icon" class="user-icon">
-                    {% if user.event_count >= 10 %}
-                    <span class="badge-icon gold" title="Gold Badge: Participated in 10+ events"><i class="fas fa-award"></i></span>
-                    {% elif user.event_count >= 5 %}
-                    <span class="badge-icon red" title="Red Badge: Participated in 5+ events"><i class="fas fa-medal"></i></span>
+                    {% if badge == 'red' %}
+                    <span class="badge red"><i class="fas fa-fire"></i></span>
+                    {% elif badge == 'gold' %}
+                    <span class="badge gold"><i class="fas fa-crown"></i></span>
                     {% endif %}
                 </div>
                 <h2>{{ user.name }}</h2>
                 <p>{{ user.email }}</p>
-                <div class="user-stats">
-                    <div class="stat">
-                        <span class="stat-value">{{ user.event_count }}</span>
-                        <span class="stat-label">Events</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-value">{{ user.connections }}</span>
-                        <span class="stat-label">Connections</span>
-                    </div>
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span class="status-text">Online</span>
                 </div>
-                {% if user.event_count >= 10 %}
-                <div class="badge gold">Gold Member</div>
-                {% elif user.event_count >= 5 %}
-                <div class="badge red">Red Member</div>
-                {% else %}
-                <div class="badge basic">New Member</div>
-                {% endif %}
             </div>
             <nav>
                 <ul>
-                    <li><a href="#"><i class="fas fa-home"></i> Dashboard</a></li>
-                    <li><a href="#"><i class="fas fa-calendar-alt"></i> My Events</a></li>
-                    <li><a href="#"><i class="fas fa-users"></i> Connections</a></li>
-                    <li><a href="#"><i class="fas fa-bell"></i> Notifications</a></li>
-                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
                     <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    <li><a href="#" class="edit-profile-link"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
                 </ul>
             </nav>
-            <div class="membership-info">
-                <h3>Membership Progress</h3>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: {{ (user.event_count / 10) * 100 if user.event_count < 10 else 100 }}%"></div>
-                </div>
-                <p>{{ user.event_count }}/10 events for Gold</p>
+            <div class="sidebar-footer">
+                <p>&copy; 2025 Event App</p>
             </div>
         </aside>
 
         <main class="main-content">
             <div class="profile-header">
-                <div>
-                    <h1>My Profile</h1>
-                    <p class="last-active">Last active: {{ user.last_active }}</p>
+                <div class="header-left">
+                    <h1>Your Profile</h1>
+                    <p class="subtitle">Manage your events and information</p>
                 </div>
-                <div class="header-actions">
-                    <button class="action-btn"><i class="fas fa-share-alt"></i> Share</button>
-                    <button class="edit-btn"><i class="fas fa-edit"></i> Edit Profile</button>
-                </div>
+                <button class="edit-btn"><i class="fas fa-pen"></i> Edit Profile</button>
             </div>
 
-            <section class="user-summary">
-                <div class="summary-card">
-                    <div class="summary-icon"><i class="fas fa-calendar-check"></i></div>
-                    <div class="summary-info">
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="stat-info">
                         <h3>{{ user.upcoming_events|length }}</h3>
-                        <p>Upcoming Events</p>
+                        <p>Upcoming</p>
                     </div>
                 </div>
-                <div class="summary-card">
-                    <div class="summary-icon"><i class="fas fa-history"></i></div>
-                    <div class="summary-info">
+                <div class="stat-card">
+                    <i class="fas fa-history"></i>
+                    <div class="stat-info">
                         <h3>{{ user.past_events|length }}</h3>
                         <p>Past Events</p>
                     </div>
                 </div>
-                <div class="summary-card">
-                    <div class="summary-icon"><i class="fas fa-star"></i></div>
-                    <div class="summary-info">
-                        <h3>{{ user.rating|default('N/A') }}</h3>
-                        <p>Average Rating</p>
+                <div class="stat-card">
+                    <i class="fas fa-medal"></i>
+                    <div class="stat-info">
+                        <h3>{% if badge == 'gold' %}Gold{% elif badge == 'red' %}Red{% else %}None{% endif %}</h3>
+                        <p>Badge Status</p>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <section class="events">
                 <div class="section-header">
                     <h2><i class="fas fa-calendar-alt"></i> Upcoming Events</h2>
-                    <a href="#" class="view-all">View All</a>
+                    <div class="divider"></div>
                 </div>
                 <div class="event-cards">
                     {% for event in user.upcoming_events %}
                     <div class="event-card">
-                        <div class="event-date">
-                            <span class="date-day">{{ event.date|parse_date('%d') }}</span>
-                            <span class="date-month">{{ event.date|parse_date('%b') }}</span>
+                        <div class="event-header">
+                            <h3>{{ event.event_name }}</h3>
+                            <span class="event-tag">Upcoming</span>
                         </div>
-                        <div class="event-details">
-                            <h3>{{ event.title }}</h3>
-                            <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <p class="event-time"><i class="fas fa-clock"></i> {{ event.time }}</p>
-                            <div class="event-actions">
-                                <button class="btn-details" onclick="window.location.href='{{ url_for('event_detail', event_id=event.id) }}'">Details</button>
-                                <button class="btn-cancel">Cancel</button>
-                            </div>
-                        </div>
-                        <div class="event-participants">
-                            <span><i class="fas fa-users"></i> {{ event.participants }}</span>
+                        <div class="event-actions">
+                            <button onclick="window.location.href='{{ url_for('event_detail', event_id=event.event_id) }}'">
+                                <i class="fas fa-cog"></i> Manage
+                            </button>
                         </div>
                     </div>
                     {% else %}
-                    <div class="no-events">
+                    <div class="empty-state">
                         <i class="fas fa-calendar-times"></i>
                         <p>No upcoming events</p>
-                        <button class="btn-discover">Discover Events</button>
                     </div>
                     {% endfor %}
                 </div>
@@ -132,64 +100,25 @@
             <section class="events past-events">
                 <div class="section-header">
                     <h2><i class="fas fa-history"></i> Past Events</h2>
-                    <a href="#" class="view-all">View All</a>
+                    <div class="divider"></div>
                 </div>
                 <div class="event-cards">
                     {% for event in user.past_events %}
                     <div class="event-card">
-                        <div class="event-date completed">
-                            <span class="date-day">{{ event.date|parse_date('%d') }}</span>
-                            <span class="date-month">{{ event.date|parse_date('%b') }}</span>
+                        <div class="event-header">
+                            <h3>{{ event.event_name }}</h3>
+                            <span class="event-tag past">Past</span>
                         </div>
-                        <div class="event-details">
-                            <h3>{{ event.title }}</h3>
-                            <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <div class="event-rating">
-                                {% for i in range(5) %}
-                                <i class="fas fa-star {% if i < event.rating %}rated{% endif %}"></i>
-                                {% endfor %}
-                            </div>
-                            <div class="event-actions">
-                                <button class="btn-details" onclick="window.location.href='{{ url_for('event_detail', event_id=event.id) }}'">View Details</button>
-                                {% if not event.feedback_submitted %}
-                                <button class="btn-feedback">Leave Feedback</button>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="event-certificate">
-                            <button class="btn-certificate" title="Download Certificate"><i class="fas fa-certificate"></i></button>
+                        <div class="event-actions">
+                            <button onclick="window.location.href='{{ url_for('event_detail', event_id=event.event_id) }}'">
+                                <i class="fas fa-eye"></i> View
+                            </button>
                         </div>
                     </div>
                     {% else %}
-                    <div class="no-events">
-                        <i class="fas fa-history"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
                         <p>No past events</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <section class="recommended-events">
-                <div class="section-header">
-                    <h2><i class="fas fa-thumbs-up"></i> Recommended For You</h2>
-                </div>
-                <div class="event-cards horizontal-scroll">
-                    {% for event in recommended_events %}
-                    <div class="event-card recommended">
-                        <div class="event-image" style="background-image: url('{{ url_for('static', filename=event.image) }}')">
-                            <span class="event-category">{{ event.category }}</span>
-                        </div>
-                        <div class="event-details">
-                            <h3>{{ event.title }}</h3>
-                            <p class="event-date-time"><i class="fas fa-calendar-alt"></i> {{ event.date }} · {{ event.time }}</p>
-                            <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <button class="btn-register">Register</button>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="no-events">
-                        <i class="fas fa-search"></i>
-                        <p>No recommendations available</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -200,82 +129,49 @@
     <!-- Edit Profile Modal -->
     <div id="editProfileModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Edit Profile</h2>
-            <form action="{{ url_for('edit_profile') }}" method="POST" enctype="multipart/form-data">
+            <div class="modal-header">
+                <h2>Edit Your Profile</h2>
+                <span class="close-btn">&times;</span>
+            </div>
+            <form action="{{ url_for('edit_profile') }}" method="POST">
                 <div class="form-group">
-                    <label for="profile-image">Profile Image</label>
-                    <div class="image-upload">
-                        <img id="preview-image" src="{{ url_for('static', filename='See.jpeg') }}" alt="Profile Preview">
-                        <input type="file" id="profile-image" name="profile_image" accept="image/*">
-                        <label for="profile-image" class="upload-btn"><i class="fas fa-camera"></i> Change Photo</label>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="name">Full Name</label>
+                    <label for="name"><i class="fas fa-user"></i> Name:</label>
                     <input type="text" id="name" name="name" value="{{ user.name }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email Address</label>
+                    <label for="email"><i class="fas fa-envelope"></i> Email:</label>
                     <input type="email" id="email" name="email" value="{{ user.email }}" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="bio">Bio</label>
-                    <textarea id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" name="location" value="{{ user.location }}">
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn-cancel" onclick="document.getElementById('editProfileModal').style.display='none'">Cancel</button>
-                    <button type="submit" class="btn-save">Save Changes</button>
-                </div>
+                <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Save Changes</button>
             </form>
         </div>
     </div>
 
     <script>
-        // Modal functionality
         var modal = document.getElementById("editProfileModal");
         var btn = document.querySelector(".edit-btn");
+        var editProfileLink = document.querySelector(".edit-profile-link");
         var span = document.querySelector(".close-btn");
 
-        btn.onclick = function() {
+        btn.onclick = function () {
             modal.style.display = "block";
         }
 
-        span.onclick = function() {
+        editProfileLink.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        span.onclick = function () {
             modal.style.display = "none";
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
-
-        // Image preview functionality
-        const profileImageInput = document.getElementById('profile-image');
-        const previewImage = document.getElementById('preview-image');
-
-        profileImageInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-            }
-        });
     </script>
 </body>
-</html> -->
-
- -->
+</html>

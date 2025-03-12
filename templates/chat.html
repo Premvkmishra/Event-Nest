@@ -3,103 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Room</title>
+    <title>Event Chat - {{ event.name }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        :root {
+            --dark-bg: #121212;
+            --darker-bg: #1e1e1e;
+            --chat-bg: #262626;
+            --accent: #8e44ad;
+            --accent-hover: #9b59b6;
+            --text: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --border: #333333;
+        }
+        
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        
+        .header {
+            background-color: var(--darker-bg);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 0;
+        }
+        
+        .back-button {
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .back-button i {
+            margin-right: 5px;
+        }
+        
         .chat-container {
             display: flex;
-            height: 100vh;
-            max-width: 1200px;
+            height: calc(100vh - 60px);
+            max-width: 1400px;
             margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
+            background-color: var(--darker-bg);
         }
+        
         .participants {
             width: 25%;
-            background-color: #2d3436;
-            color: white;
+            background-color: var(--darker-bg);
+            color: var(--text);
             padding: 20px;
             overflow-y: auto;
+            border-right: 1px solid var(--border);
         }
+        
         .participants h2 {
             margin-top: 0;
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-size: 1.2rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
+        
         .participants ul {
             list-style: none;
             padding: 0;
         }
+        
         .participants ul li {
             margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--chat-bg);
+            display: flex;
+            align-items: center;
         }
+        
+        .participants ul li:before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
         .chat-area {
             width: 75%;
             display: flex;
             flex-direction: column;
         }
+        
         .message-box {
             flex-grow: 1;
             padding: 20px;
             overflow-y: auto;
-            background-color: #dfe6e9;
+            background-color: var(--chat-bg);
+            display: flex;
+            flex-direction: column;
         }
-        .message-box p {
-            padding: 10px;
-            background-color: white;
+        
+        .message {
+            padding: 12px 15px;
             border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            max-width: 80%;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+            word-wrap: break-word;
         }
-        .message-box p span {
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-left {
+            background-color: var(--darker-bg);
+            color: var(--text);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        
+        .message-right {
+            background-color: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        
+        .message-header {
             font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--accent-hover);
         }
+        
+        .system-message {
+            background-color: rgba(142, 68, 173, 0.2);
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 8px;
+            border-radius: 15px;
+            margin: 10px auto;
+            font-size: 0.8rem;
+            max-width: 80%;
+        }
+        
+        .message-timestamp {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            text-align: right;
+        }
+        
         .message-form {
             display: flex;
-            padding: 20px;
-            background-color: #f4f4f4;
-            border-top: 1px solid #ddd;
+            padding: 15px 20px;
+            background-color: var(--darker-bg);
+            border-top: 1px solid var(--border);
         }
+        
         .message-form input {
             flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 12px 15px;
+            border: none;
+            background-color: var(--chat-bg);
+            color: var(--text);
             border-radius: 5px;
             margin-right: 10px;
+            outline: none;
         }
+        
         .message-form button {
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
-            background-color: #0984e3;
+            background-color: var(--accent);
             color: white;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
         }
+        
         .message-form button:hover {
-            background-color: #74b9ff;
+            background-color: var(--accent-hover);
+        }
+        
+        .message-form button i {
+            margin-right: 8px;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+        
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .chat-container {
+                flex-direction: column;
+            }
+            
+            .participants, .chat-area {
+                width: 100%;
+            }
+            
+            .participants {
+                height: 200px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
         }
     </style>
 </head>
 <body>
 
+<div class="header">
+    <a href="{{ url_for('event_detail', event_id=event.id) }}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Event
+    </a>
+    <h1>{{ event.name }} - Chat Room</h1>
+    <div></div> <!-- Empty div for flex spacing -->
+</div>
+
 <div class="chat-container">
     <div class="participants">
         <h2>Participants</h2>
         <ul id="participants-list">
+            <!-- Participants will be added here dynamically -->
         </ul>
     </div>
 
     <!-- Chat Area -->
     <div class="chat-area">
         <div class="message-box" id="message-box">
+            <!-- Messages will be added here dynamically -->
         </div>
         <form id="message-form" class="message-form">
-            <input type="text" id="message-input" placeholder="Enter your message" autocomplete="off">
+            <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
             <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
         </form>
     </div>
@@ -115,16 +292,50 @@
 
     const username = "{{ username }}"; 
     const eventId = "{{ event.id }}"; 
+    
+    // Format current time
+    function getFormattedTime() {
+        const now = new Date();
+        return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    
+    // Create message elements based on type
+    function createMessageElement(data, isOwnMessage = false) {
+        // Handle system messages
+        if (data.username === 'System') {
+            const systemMsg = document.createElement('div');
+            systemMsg.className = 'system-message';
+            systemMsg.textContent = data.msg;
+            return systemMsg;
+        }
+        
+        // Handle regular messages
+        const messageDiv = document.createElement('div');
+        messageDiv.className = isOwnMessage ? 'message message-right' : 'message message-left';
+        
+        const timestamp = getFormattedTime();
+        
+        messageDiv.innerHTML = `
+            <div class="message-header">${data.username}</div>
+            <div class="message-content">${data.msg}</div>
+            <div class="message-timestamp">${timestamp}</div>
+        `;
+        
+        return messageDiv;
+    }
 
+    // Join the room
     socket.emit('join', {username: username, event_id: eventId});
-
+    
+    // Handle incoming messages
     socket.on('message', function(data) {
-        const messageElement = document.createElement('p');
-        messageElement.innerHTML = `<span>${data.username}:</span> ${data.msg}`;
+        const isOwnMessage = data.username === username && data.username !== 'System';
+        const messageElement = createMessageElement(data, isOwnMessage);
         messageBox.appendChild(messageElement);
         messageBox.scrollTop = messageBox.scrollHeight; // Scroll to the bottom
     });
 
+    // Send messages
     messageForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const message = messageInput.value;
@@ -134,26 +345,70 @@
         }
     });
 
+    // Load previous messages
     fetch(`/event/${eventId}/messages`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Messages endpoint not available');
+            }
+            return response.json();
+        })
         .then(data => {
             data.messages.forEach(msg => {
-                const messageElement = document.createElement('p');
-                messageElement.innerHTML = `<span>${msg.username}:</span> ${msg.content}`;
+                const isOwnMessage = msg.username === username;
+                const messageElement = createMessageElement({
+                    username: msg.username, 
+                    msg: msg.content
+                }, isOwnMessage);
                 messageBox.appendChild(messageElement);
             });
             messageBox.scrollTop = messageBox.scrollHeight; 
+        })
+        .catch(error => {
+            console.error('Error loading messages:', error);
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'system-message';
+            errorMsg.textContent = 'Could not load previous messages. Chat history will not be saved.';
+            messageBox.appendChild(errorMsg);
         });
 
+    // Load participants
     fetch(`/event/${eventId}/participants`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Participants endpoint not available');
+            }
+            return response.json();
+        })
         .then(data => {
             data.participants.forEach(participant => {
                 const participantElement = document.createElement('li');
                 participantElement.textContent = participant.name;
                 participantsList.appendChild(participantElement);
             });
+            
+            // Add current user if not already in the list
+            const currentUserExists = [...participantsList.children].some(
+                item => item.textContent === username
+            );
+            
+            if (!currentUserExists && username !== 'Guest') {
+                const participantElement = document.createElement('li');
+                participantElement.textContent = username;
+                participantsList.appendChild(participantElement);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading participants:', error);
+            const participantElement = document.createElement('li');
+            participantElement.textContent = username;
+            participantsList.appendChild(participantElement);
         });
+        
+    // Handle page close/refresh
+    window.addEventListener('beforeunload', function() {
+        socket.emit('leave', {username: username, event_id: eventId});
+    });
 </script>
 </body>
 </html>
